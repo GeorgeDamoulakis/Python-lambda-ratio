@@ -1,0 +1,42 @@
+import cv2
+import numpy as np
+
+
+img = cv2.imread('C:\\LAMDAratio\M4.tif',0)
+edges = cv2.Canny(img,100,200,apertureSize = 3)
+lamda = 0
+#result = np.hstack((img,edges))
+
+print('Original Dimensions : ',img.shape)
+#print('resized Dimensions : ',edges.shape)
+
+
+scale_percent = 50 # percent of original size
+width = int(img.shape[1] * scale_percent / 100)
+height = int(img.shape[0] * scale_percent / 100)
+dim = (width, height)
+# resize image
+resized = cv2.resize(edges, dim, interpolation = cv2.INTER_AREA)
+print('Resized Dimensions : ',resized.shape)
+
+cv2.imshow('image',resized)
+cv2.waitKey()
+cv2.destroyAllWindows()
+
+def counting_pixels(): # this defines the counting pixel process
+    print("Counting pixels: Initiated")
+    l1 = len(edges)  # this is the length of the BIG array
+    l2 = len(edges[1])  # this is the length of the first array of the BIG array
+    contact_line_pixels1 = 0  # this is the initial definition of the contact line pixels
+    # all the black (255) or blackish (greater than 127) pixels are superhyrophilic
+    for i in range(l1):
+        for j in range(l2):
+            pixel1 = edges[i][j]  # img[i][j] is just a number from 0 to 255
+            if abs(pixel1) == 255:
+                contact_line_pixels1 += 1  #
+
+    print(f'The contact line pixels are: ', contact_line_pixels1, 'pixels')
+    lamda =  ((2*resized.shape[0])+(2*resized.shape[1])) / contact_line_pixels1 
+    print(f'The lamda ratio is:', round(lamda, 4))  # it's get rounded to 2 digits
+
+counting_pixels()        #shows how many pixels we have
